@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 7: Student Habits & Performance</title>
+    <style>
+        :root {
+            --bg: #f3f4f6;
+            --surface: #ffffff;
+            --primary: #4f46e5;
+            --primary-light: #e0e7ff;
+            --text-dark: #1f2937;
+            --text-light: #4b5563;
+            --code-bg: #f8fafc;
+            --output-bg: #0f172a;
+            --output-text: #38bdf8;
+            --border: #e5e7eb;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Dashboard Header */
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        /* Overview Summary Section */
+        .grid-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .summary-card .number {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .summary-card .label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Document Sections */
+        h2 {
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            margin-top: 40px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 24px;
+            background-color: var(--primary);
+            border-radius: 2px;
+        }
+
+        /* Notebook Code Cards */
+        .card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+
+        /* Jupyter-style Notebook Blocks */
+        .block-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+            color: var(--text-light);
+        }
+
+        .code-input {
+            background-color: var(--code-bg);
+            color: #0f172a;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            white-space: pre-wrap;
+            margin-bottom: 14px;
+            font-size: 0.9rem;
+        }
+
+        .code-output {
+            background-color: var(--output-bg);
+            color: var(--output-text);
+            font-family: 'Fira Code', 'Courier New', monospace;
+            padding: 16px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+        }
+
+        .code-stderr {
+            background-color: #fef2f2;
+            color: #991b1b;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            border: 1px solid #fee2e2;
+        }
+
+        /* Conceptual Text block */
+        .text-response {
+            background-color: #fcfcfd;
+            border: 1px dashed #cbd5e1;
+            padding: 16px;
+            border-radius: 8px;
+            font-style: normal;
+            color: var(--text-dark);
+        }
+
+        .alert-box {
+            background-color: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #b45309;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        table.dataframe {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 0.9rem;
+        }
+        table.dataframe th {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            padding: 8px;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+        table.dataframe td {
+            padding: 8px;
+            border: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>Project 7: Student Habits vs Academic Performance Analysis</h1>
+        <p>An Analysis of Lifestyle Variables and Exam Performance Foundations</p>
+    </div>
+
+
+    <div class="grid-summary">
+        <div class="summary-card">
+            <div class="number">1,000</div>
+            <div class="label">Total Samples</div>
+        </div>
+        <div class="summary-card">
+            <div class="number">16</div>
+            <div class="label">Tracked Variables</div>
+        </div>
+        <div class="summary-card">
+            <div class="number">91</div>
+            <div class="label">Missing Records</div>
+        </div>
+        <div class="summary-card">
+            <div class="number">3.54h</div>
+            <div class="label">Avg Study Time</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="question-text" style="font-size: 1.3rem;">Project Overview</div>
+        <p style="margin-top: 0; color: var(--text-light);">This project analyzes the relationship between student lifestyle habits and academic performance using a comprehensive dataset from Kaggle. The dataset contains information about 1,000 students and includes 16 variables covering various aspects of student life, including study habits, social media usage, sleep patterns, diet quality, exercise frequency, and academic outcomes.</p>
+        <p style="color: var(--text-light); margin-bottom: 0;">The analysis focuses on understanding how different study patterns correlate with exam performance. The project demonstrates fundamental data analysis skills including data cleaning, statistical calculations, and comparative analysis using Python and pandas.</p>
+    </div>
+
+    <h2>Environment Setup & Inspection</h2>
+
+    <div class="card">
+        <div class="block-label">In [2]:</div>
+        <div class="code-input"># Install dependencies as needed:
+# pip install kagglehub[pandas-datasets]
+import kagglehub
+from kagglehub import KaggleDatasetAdapter
+
+# Set the path to the file you'd like to load
+file_path = "student_habits_performance.csv"
+
+# Load the latest version
+df = kagglehub.load_dataset(
+  KaggleDatasetAdapter.PANDAS,
+  "jayaantanaath/student-habits-vs-academic-performance",
+  file_path,
+)
+
+print("First 5 records:", df.head())</div>
+        
+        <div class="block-label">Exceptions / Warnings:</div>
+        <div class="code-stderr">/tmp/ipykernel_2950/3453289196.py:11: DeprecationWarning: Use dataset_load() instead of load_dataset(). load_dataset() will be removed in a future version.</div>
+
+        <div class="block-label">Out [2]:</div>
+        <div class="code-output">Using Colab cache for faster access to the 'student-habits-vs-academic-performance' dataset.
+First 5 records:   student_id  age  gender  study_hours_per_day  social_media_hours  ... netflix_hours ... exam_score  
+0      S1000   23  Female                  0.0                 1.2  ...          1.1 ...       56.2  
+1      S1001   20  Female                  6.9                 2.8  ...          2.3 ...      100.0  
+2      S1002   21    Male                  1.4                 3.1  ...          1.3 ...       34.3  
+3      S1003   23  Female                  1.0                 3.9  ...          1.0 ...       26.8  
+4      S1004   19  Female                  5.0                 4.4  ...          0.5 ...       66.4  </div>
+    </div>
+
+    <div class="card">
+        <div class="block-label">In [3]:</div>
+        <div class="code-input">one_col = df['age']</div>
+        
+        <div style="margin-top: 15px;" class="block-label">In [4]:</div>
+        <div class="code-input">type(one_col)</div>
+        <div class="block-label">Out [4]:</div>
+        <div class="code-output">pandas.core.series.Series</div>
+    </div>
+
+    <div class="card">
+        <div class="block-label">In [5]:</div>
+        <div class="code-input">df.info()</div>
+        <div class="block-label">Out [5]:</div>
+        <div class="code-output">&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 1000 entries, 0 to 999
+Data columns (total 16 columns):
+dtypes: float64(6), int64(3), object(7)
+memory usage: 125.1+ KB</div>
+
+        <div style="margin-top: 15px;" class="block-label">In [6]:</div>
+        <div class="code-input">df.shape</div>
+        <div class="block-label">Out [6]:</div>
+        <div class="code-output">(1000, 16)</div>
+
+        <div style="margin-top: 15px;" class="block-label">In [7]:</div>
+        <div class="code-input">df.columns</div>
+        <div class="block-label">Out [7]:</div>
+        <div class="code-output">Index(['student_id', 'age', 'gender', 'study_hours_per_day', 'social_media_hours',
+       'netflix_hours', 'part_time_job', 'attendance_percentage', 'sleep_hours',
+       'diet_quality', 'exercise_frequency', 'parental_education_level',
+       'internet_quality', 'mental_health_rating', 'extracurricular_participation',
+       'exam_score'], dtype='object')</div>
+    </div>
+
+    <h2>Data Cleaning Profile</h2>
+
+    <div class="card">
+        <div class="question-text" style="font-size: 1.2rem;">Data Quality Assessment</div>
+        <div class="block-label">In [8]:</div>
+        <div class="code-input">df.isnull().sum()</div>
+        <div class="block-label">Out [8]:</div>
+        <div class="code-output">student_id                        0
+age                               0
+gender                            0
+study_hours_per_day               0
+parental_education_level         91
+exam_score                        0
+dtype: int64</div>
+        <p style="color: var(--text-light); font-size: 0.95rem;">This checks how many missing (NaN) values are in each column of the DataFrame. Based on the output, all columns have 0 missing values except for <code>parental_education_level</code>, which has 91 missing values. The dataset is mostly clean, but you do need to clean or handle the missing data in the parental_education_level column.</p>
+    </div>
+
+    <div class="card">
+        <div class="question-text" style="font-size: 1.1rem;">Missing Value Resolution Strategy: Drop Records</div>
+        <div class="block-label">In [9]:</div>
+        <div class="code-input">df.dropna(subset=['parental_education_level'], inplace=True)</div>
+        
+        <div style="margin-top: 15px;" class="block-label">In [10]:</div>
+        <div class="code-input"># checking the data again
+df.isnull().sum()</div>
+        <div class="block-label">Out [10]:</div>
+        <div class="code-output">student_id                       0
+parental_education_level         0
+exam_score                       0
+dtype: int64</div>
+    </div>
+
+    <h2>Analytical Framework & Assignments</h2>
+
+    <div class="card">
+        <div class="question-number">Question 1</div>
+        <div class="question-text">Find the average study hours per day for all students. (0.5 point)</div>
+        
+        <div class="block-label">In [11]:</div>
+        <div class="code-input"># Calculate mean of study_hours_per_day column
+average_study_hours = df['study_hours_per_day'].mean()
+
+# Print result of mean
+print(f"The average study hours per day for all students is: {average_study_hours:.2f} hours")</div>
+        
+        <div class="block-label">Out [11]:</div>
+        <div class="code-output">The average study hours per day for all students is: 3.54 hours</div>
+    </div>
+
+    <div class="card">
+        <div class="question-number">Question 2</div>
+        <div class="question-text">Identify the student who studies MOST hours per day. (0.5 point)</div>
+        
+        <div class="block-label">In [25]:</div>
+        <div class="code-input"># Identify maximum value in study hours column
+max_study_hours = df['study_hours_per_day'].max()
+max_study_students = df[df['study_hours_per_day'] == max_study_hours]
+
+# display results with only one student
+print("Student(s) with the most study hours per day:")
+display(max_study_students[['student_id', 'study_hours_per_day']])</div>
+        
+        <div class="block-label">Out [25]:</div>
+        <table class="dataframe">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>student_id</th>
+                    <th>study_hours_per_day</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>455</th>
+                    <td>S1455</td>
+                    <td>8.3</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

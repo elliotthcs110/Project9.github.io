@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Project 5 - The Great Gatsby Text Analysis</title>
+    <style type="text/css">
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f7f9fa;
+        }
+        header {
+            border-bottom: 2px solid #004f2d; /* UO Green */
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #004f2d;
+            margin-bottom: 5px;
+        }
+        .markdown-cell {
+            background-color: #ffffff;
+            border-left: 4px solid #004f2d;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .code-container {
+            background-color: #1e1e1e;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 10px;
+            overflow-x: auto;
+        }
+        .output-container {
+            background-color: #f1f3f4;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0 25px 0;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            font-size: 13px;
+            color: #24292e;
+            white-space: pre-wrap;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        pre {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            font-size: 14px;
+            margin: 0;
+            color: #d4d4d4;
+        }
+        .comment { color: #6a9955; font-style: italic; }
+        .keyword { color: #569cd6; font-weight: bold; }
+        .function { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .number { color: #b5cea8; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Project 5: Text Analysis & Word Counts</h1>
+        <p><strong>Author:</strong> Elliott Hunt</p>
+    </header>
+
+    <main>
+        <!-- Cell 1: Intro -->
+        <section class="markdown-cell">
+            <h2>Computational Text Exploration</h2>
+            <p>I choose <em>The Great Gatsby</em> by F. Scott Fitzgerald as the book that I pulled the text from. I got the text from The Project Gutenberg. I chose this book because it is one of my favorite books of all time and I thought that it would be very interesting to see what the top words from the book are.</p>
+            <p>Because I just copied the code from Project 4, I needed to modify the code from Pride and Prejudice to Great Gatsby. The first change I made was to provide the correct link. I modified the name of the text in any place that it appeared, for example I changed the code from "pride_prejudice_text" to "great_gatsby_text". Pretty much anywhere that the previous code mentioned anything to do with Pride and Prejudice, I changed it to Great Gatsby.</p>
+        </section>
+
+        <!-- Cell 2: Header -->
+        <h3>Function to fetch data</h3>
+
+        <!-- Cell 3: Code Block 1 -->
+        <div class="code-container">
+<pre>
+<span class="keyword">def</span> <span class="function">fetch_text</span>(raw_url):
+    <span class="string">"""
+    This code fetches raw text from a URL.
+
+    Parameters:
+    raw_url (str): The web address of the raw URL
+
+    Returns:
+    str: the full content of the file
+    """</span>
+    <span class="keyword">import</span> requests
+    <span class="keyword">from</span> pathlib <span class="keyword">import</span> Path
+    <span class="keyword">import</span> hashlib
+
+    CACHE_DIR = Path(<span class="string">"cs_110_content/text_cache"</span>)
+    CACHE_DIR.mkdir(parents=<span class="keyword">True</span>, exist_ok=<span class="keyword">True</span>)
+
+    <span class="keyword">def</span> <span class="function">_url_to_filename</span>(url):
+        url_hash = hashlib.sha1(url.encode(<span class="string">"utf-8"</span>)).hexdigest()[:<span class="number">12</span>]
+        <span class="keyword">return</span> CACHE_DIR / f<span class="string">"{url_hash}.txt"</span>
+
+    cache_path = _url_to_filename(raw_url)
+
+    SUCCESS_MSG = <span class="string">"✅ Text fetched."</span>
+    FAILURE_MSG = <span class="string">"❌ Failed to fetch text."</span>
+    <span class="keyword">try</span>:
+        <span class="keyword">if</span> <span class="keyword">not</span> cache_path.exists():
+            response = requests.get(raw_url, timeout=<span class="number">10</span>)
+            response.raise_for_status()
+            text_data = response.text
+            cache_path.write_text(text_data, encoding=<span class="string">"utf-8"</span>)
+        print(SUCCESS_MSG)
+        <span class="keyword">return</span> cache_path.read_text(encoding=<span class="string">"utf-8"</span>)
+
+    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
+        print(FAILURE_MSG)
+        print(f<span class="string">"Error: {e}"</span>)
+        <span class="keyword">return</span> <span class="string">""</span>
+</pre>
+        </div>
+        <div class="output-container"># Output: Code compiled successfully</div>
+
+        <!-- Cell 4: Markdown -->
+        <h3>Save the text in a variable</h3>
+
+        <!-- Cell 5: Code Block 2 -->
+        <div class="code-container">
+<pre>
+GREAT_GATSBY_URL = <span class="string">"https://www.gutenberg.org/cache/epub/64317/pg64317-images.html"</span>
+
+great_gatsby_text = fetch_text(GREAT_GATSBY_URL)
+</pre>
+        </div>
+        <div class="output-container">✅ Text fetched.</div>
+
+        <!-- Cell 6: Markdown -->
+        <section class="markdown-cell">
+            <h3>Statistics about the data</h3>
+        </section>
+
+        <!-- Cell 7: Code Block 3 -->
+        <div class="code-container">
+<pre>
+<span class="keyword">def</span> <span class="function">print_text_stats</span>(text):
+    <span class="string">"""
+    This code calculates and prints basic descriptive stats for a given string.
+
+    Parameters:
+    text(str): the string to be analyzed
+
+    Returns:
+    None - there are no returns as the result is printed.
+    """</span>
+    num_chars = <span class="function">len</span>(text)
+
+    lines = text.splitlines()
+    num_lines = <span class="function">len</span>(lines)
+
+    num_words = <span class="number">0</span>
+    <span class="keyword">for</span> line <span class="keyword">in</span> lines:
+        words_in_line = line.split()
+        num_words_in_line = <span class="function">len</span>(words_in_line)
+        num_words += num_words_in_line
+
+    print(f<span class="string">"Number of characters: {num_chars}"</span>)
+    print(f<span class="string">"Number of lines: {num_lines}"</span>)
+    print(f<span class="string">"Number of words: {num_words}"</span>)
+
+print_text_stats(great_gatsby_text)
+</pre>
+        </div>
+        <div class="output-container">Number of characters: 309445
+Number of lines: 5601
+Number of words: 55146</div>
+
+        <!-- Cell 8: Code Block 4 -->
+        <div class="code-container">
+<pre>
+<span class="keyword">def</span> <span class="function">get_word_counts</span>(text):
+    <span class="string">"""
+    This code performs a basic word count based on the frequency of the word appearing in the raw text.
+
+    Parameters:
+    text(str): The raw string to be processed
+
+    Returns:
+    dict: a dictionary where keys are lowercase words and values are frequency
+    """</span>
+    word_counts = {}
+    lines = text.splitlines()
+    <span class="keyword">for</span> line <span class="keyword">in</span> lines:
+        words = line.split()
+        <span class="keyword">for</span> word <span class="keyword">in</span> words:
+            word = word.lower()
+            <span class="keyword">if</span> word <span class="keyword">in</span> word_counts:
+                word_counts[word] += <span class="number">1</span>
+            <span class="keyword">else</span>:
+                word_counts[word] = <span class="number">1</span>
+    <span class="keyword">return</span> word_counts
+
+word_counts = get_word_counts(great_gatsby_text)
+print(word_counts)
+</pre>
+        </div>
+        
+        <!-- Interactive Scroll Box for Huge Dictionary Output -->
+        <div class="output-container" style="max-height: 300px;">{'rel="schema.dc"': 1, 'href="http://purl.org/dc/elements/1.1/"&gt;': 1, 'in': 839, 'by': 143, 'f.': 2, 'scott': 3, 'women': 13, 'people': 49, 'island': 11, 'the': 1540, 'is': 111, 'for': 331, 'use': 18, 'anyone': 12, 'anywhere': 4, 'united': 15, 'states': 12, 'and': 1540, 'most': 32, 'other': 73, 'parts': 3, 'world': 13, 'at': 409, 'no': 80, 'with': 463, 'almost': 22, 'you': 397, 'may': 20, 'copy': 14, 'it': 402, 'away': 37, 'or': 164, 'under': 38, 'terms': 24, 'license': 10, 'included': 8, 'this': 180, 'if': 153, 'are': 54, 'not': 80, 'located': 7, 'will': 20, 'have': 139, 'to': 1185, 'check': 4, 'laws': 10, 'country': 8, 'where': 52, 'before': 53, 'using': 6, 'gatsby': 106, 'produced': 5, 'based': 3, 'on': 348, 'a': 1439, 'wear': 3, 'gold': 5, 'that': 537, 'move': 8, 'high,': 4, 'her': 339, 'she': 354, 'cry': 3, 'must': 41, 'my': 235, 'younger': 2, 'more': 60, 'years': 20, 'father': 4, 'gave': 26, 'me': 221, 'some': 101, 'been': 103, 'turning': 10, 'over': 124, 'mind': 5, 'ever': 25, 'he': 769, 'told': 44, 'all': 186, 'had': 375, 'always': 33, 'way': 13, 'i': 993, 'understood': 5, 'meant': 4, 'deal': 3, 'than': 37, 'has': 19, 'opened': 17, 'up': 166, 'many': 17, 'curious': 9, 'made': 61, 'few': 26, 'were': 170, 'realized': 7, 'young': 43, 'men': 8, 'which': 69, 'express': 3, 'matter': 10, 'am': 13, 'still': 27, 'little': 91, 'afraid': 8, 'something': 57, 'forget': 8, 'as': 274, 'out': 191, 'after': 84, 'come': 57, 'founded': 3, 'hard': 11, 'certain': 15, 'point': 8, 'what': 87, 'back': 89, 'from': 243, 'east': 15, 'autumn': 5, 'felt': 23, 'wanted': 27, 'uniform': 5, 'sort': 23, 'into': 167, 'human': 8, 'heart.': 6, 'only': 51, 'man': 69, 'who': 98, 'his': 488, 'everything': 15, 'personality': 2, 'then': 111, 'gorgeous': 3, 'him': 190, 'life': 12, 'ten': 6, 'thousand': 6, 'miles': 4, 'nothing': 23, 'do': 75, 'romantic': 8, 'found': 36, 'person': 13, 'likely': 4, 'shall': 4, 'find': 16, 'again': 27, 'turned': 64, 'dust': 6, 'floated': 6, 'closed': 7, 'interest': 5, 'family': 12, 'middle': 10, 'three': 32, 'we': 187, 'line': 7, 'sent': 17, 'war': 3, 'started': 21, 'business': 12, 'saw': 50, 'rather': 24, 'new': 71, 'haven': 3, 'just': 94, 'later': 18, 'go': 55, 'learn': 3, 'bond': 3, 'everybody': 8, 'knew': 49, 'could': 62, 'support': 5, 'talked': 15, 'finally': 9, 'said': 164, 'very': 54, 'faces.': 2, 'agreed': 9, 'year': 9, 'spring': 5, 'rooms': 5, 'left': 37, 'wide': 7, 'lawns': 3, 'trees,': 5, 'office': 11, 'suggested': 9, 'take': 27, 'house': 57, 'together': 13, 'town': 3, 'idea.': 2, 'alone.': 8, 'days': 13, 'until': 39, 'ran': 13, 'woman': 4, 'bed': 6, 'cooked': 2, 'breakfast': 3, 'morning': 18, 'stopped': 18, 'road.': 4, 'asked': 38, 'walked': 23, 'casually': 5, 'freedom': 2, 'sunshine': 3, 'leaves': 6, 'growing': 2, 'things': 25, 'fast': 3, 'familiar': 5, 'summer.': 7, 'much': 30, 'fine': 7, 'air.': 12, 'bought': 16, 'dozen': 18, 'volumes': 1, 'money': 13, 'high': 11, 'intention': 3, 'reading': 4, 'books': 4, 'wrote': 3, 'solemn': 6, 'become': 5, 'limited': 8, 'looked': 82, 'window,': 4, 'chance': 4, 'should': 11, 'rented': 2, 'strangest': 2, 'slender': 3, 'among': 21, 'natural': 2, 'two': 67, 'unusual': 3, 'land.': 2, 'twenty': 3, 'pair': 6, 'enormous': 10, 'shape': 7, 'lived': 10, 'less': 12, 'fashionable': 2, 'bizarre': 3, 'sinister': 4, 'contrast': 1, 'between': 22, 'tip': 4, 'yards': 4, 'huge': 4, 'places': 4, 'twelve': 3, 'fifteen': 2, 'colossal': 4, 'side,': 6, 'thin': 8, 'beard': 2, 'raw': 4, 'marble': 5, 'swimming': 4, 'pool,': 2, 'forty': 3, 'acres': 1, 'lawn': 11, 'garden.': 14, 'know': 70, 'mr.': 78, 'mansion': 3, 'small': 31, 'view': 3, 'across': 26, 'white': 36, 'along': 28, 'history': 6, 'summer': 8, 'really': 10, 'begins': 2, 'evening': 13, 'drove': 15, 'dinner': 7, 'tom': 115, 'daisy': 99, 'cousin': 3, 'husband,': 5, 'powerful': 2, 'ends': 2, 'played': 7, 'football': 2, 'national': 3, 'figure': 6, 'reach': 8, 'afterward': 6, 'wealthy': 2, 'chicago': 11, 'took': 48, 'breath': 5, 'brought': 16, 'string': 3, 'polo': 5, 'ponies': 1, 'lake': 4, 'realize': 4, 'france': 3, 'rich': 7, 'drifted': 5, 'permanent': 2, 'believe': 15, 'sight': 9, 'drift': 3, 'seeking,': 1, 'game.': 2, 'happened': 12, 'windy': 2, 'see': 60, 'friends': 3, 'scarcely': 7, 'even': 41, 'elaborate': 5, 'cheerful': 7, 'beach': 6, 'towards': 5, 'front': 28, 'door': 34, 'brick': 4, 'walks': 2, 'burning': 2, 'reached': 15, 'drifting': 3, 'side': 20, 'bright': 16, 'its': 42, 'broken': 8, 'french': 4, 'open': 17, 'afternoon,': 6, 'buchanan': 12, 'standing': 16, 'legs': 2, 'apart': 3, 'porch.': 4, 'changed': 7, 'since': 10, 'sturdy': 2, 'thirty,': 3, 'mouth': 8, 'supercilious': 2, 'arrogant': 2, 'eyes': 57, 'face': 33, 'appearance': 2, 'leaning': 6, 'forward.': 1, 'power': 3, 'shifting': 2, 'shoulder': 5, 'moved': 26, 'coat.': 7, 'capable': 2, 'cruel': 1, 'body.': 4, 'speaking': 2, 'voice,': 8, 'husky': 3, 'added': 8, 'impression': 7, 'touch': 9, 'paternal': 2, 'contempt': 2, 'toward': 47, 'hated': 2, 'same': 16, 'harsh,': 2, 'defiant': 2, 'minutes': 14, 'nice': 10, 'flashing': 2, 'arm,': 2, 'broad': 3, 'hand': 35, 'deep,': 1, 'roses,': 1, 'tide': 2, 'belonged': 3, 'oil': 2, 'again,': 15, 'politely': 1, 'through': 63, 'space,': 1, 'bound': 6, 'windows': 18, 'either': 9, 'end.': 5, 'against': 33, 'fresh': 6, 'grass': 6, 'breeze': 3, 'blew': 7, 'room,': 11, 'curtains': 6, 'end': 13, 'pale': 10, 'twisting': 2, 'making': 11, 'shadow': 8, 'wind': 8, 'sea.': 3, 'room': 25, 'couch': 6, 'upon': 35, 'dresses': 4, 'blown': 4, 'flight': 2, 'moments': 3, 'listening': 3, 'whip': 1, 'snap': 3, 'picture': 6, 'wall.': 4, 'boom': 2, 'shut': 3, 'rear': 4, 'caught': 8, 'died': 5, 'slowly': 13, 'floor.': 7, 'stranger': 2, 'full': 33, 'length': 3, 'corner': 4, 'hint': 3, 'surprised': 10, 'apology': 2, 'having': 10, 'disturbed': 1, 'in.': 6, 'girl,': 8, 'attempt': 4, 'leaned': 15, 'forward motives': 10, 'laughed,': 2, 'charming': 2, 'laugh,': 2, 'laughed': 8, 'too': 31, 'held': 14, 'moment,': 10, 'looking': 34, 'murmur': 8, 'girl': 29, 'baker.': 3, 'lips': 8, 'nodded': 10, 'quickly': 5, 'tipped': 4, 'complete': 6, 'tribute': 3, 'began': 46, 'ask': 14, 'questions': 3, 'low,': 4, 'thrilling': 5, 'voice.': 7, 'voice': 40, 'ear': 4, 'each': 33, 'sad': 7, 'lovely': 8, 'whispered': 7, 'promise': 6, 'done': 7, 'exciting': 3, 'hovering': 2, 'hour.': 8, 'how': 23, 'off': 35, 'love': 20, 'cried': 24, 'whole': 17, 'cars': 8, 'wheel': 4, 'black': 11, 'night': 35, 'ought': 18, 'asleep.': 4, 'seen': 31, 'doing,': 2, 'remarked': 8, 'annoyed': 3, 'answered': 11, 'shortly.': 3, 'stay': 5, 'glancing': 3, 'alert': 2, 'god': 5, 'damned': 5, 'fool': 6, 'live': 15, 'baker': 21, 'yawned': 4, 'rapid,': 1, 'deft': 2, 'movements': 4, 'complained,': 1, 'lying': 3, 'sofa': 2, 'trying': 14, 'cocktails': 5, 'absolutely': 5, 'drink': 5, 'drop': 4, 'wondering': 3, 'slender,': 2, 'throwing': 5, 'shoulders': 2, 'grey': 12, 'polite': 4, 'curiosity': 2, 'wan,': 2, 'somewhere': 10, 'before.': 23, 'demanded': 19, 'reply': 1, 'announced;': 1, 'moving': 7, 'hands': 26, 'set': 23, 'lightly': 2, 'us': 48, 'candles': 2, 'wind.': 2, 'objected': 4, 'weeks': 6, 'longest': 3, 'sitting': 16, 'getting': 15, 'right,': 5, 'answer': 5, 'expression': 11, 'hurt': 2, 'blue.': 2, 'mean': 14, 'marrying': 2, 'hulking': 2, 'hate': 4, 'insisted': 10, 'sometimes': 8, 'once,': 4, 'absence': 3, 'accepted': 8, 'pleasant': 4, 'effort': 9, 'hurried': 12, 'phase': 3, 'continually': 5, 'disappointed': 1, 'nervous': 5, 'moment': 50, 'confessed': 1, 'glass': 6, 'talk': 11, 'read': 11, 'rise': 2, 'coloured': 2, 'deep': 12, 'words': 10, 'tom,': 22, 'impatiently.': 3, 'fellow': 4, 'worked': 3, 'beat': 8, 'control': 3, 'sun.': 2, 'interrupted': 5, 'heavily': 2, 'chair.': 7, 'am,': 3, 'hesitation': 2, 'nod,': 2, 'winked': 2, 'science': 1, 'telephone Imbound': 12, 'rang': 9, 'butler': 13, 'porch': 8, 'seized': 2, 'momentary': 2, 'want': 51, 'hear': 18, 'used': 20, 'silver': 9, 'service': 3, 'hundred': 14, 'people.': 6, 'bad': 10, 'fell': 17, 'light': 25, 'leaving': 13, 'street': 12, 'dusk.': 2, 'murmured': 4, 'close': 14, 'pushed': 8, 'table,': 8, 'rose,': 3, 'untrue.': 2, 'faintly': 6, 'warmth': 1, 'heart': 11, 'concealed': 4, 'threw': 7, 'napkin': 1, 'excused': 2, 'exchanged': 2, 'glance': 7, 'speak': 10, 'sat': 32, 'warning': 1, 'subdued': 1, 'audible': 2, 'trembled': 1, 'verge': 3, 'sank': 4, 'mounted': 5, 'ceased': 2, 'began.': 4, 'inquired': 12, 'innocently.': 5, 'surprised.': 2, 'donâ€™t.â€': 2, 'hesitantly.': 1, 'repeated': 8, 'blankly.': 4, 'nodded.': 6, 'time.': 9, 'dress': 11, 'leather': 5, ...}</div>
+    </main>
+
+    <footer style="margin-top: 30px; font-size: 12px; color: #666;">
+        <p><a href="index2.html">← Back to Portfolio</a></p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Project 2 - Turtle Graphics Scene</title>
+    <style type="text/css">
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f7f9fa;
+        }
+        header {
+            border-bottom: 2px solid #004f2d; /* UO Green */
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #004f2d;
+            margin-bottom: 5px;
+        }
+        .project-description {
+            background-color: #e8f0ec;
+            border-left: 4px solid #004f2d;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+        }
+        /* Style for the new image container */
+        .image-container {
+            background-color: #ffffff;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            text-align: center; /* Centers the image */
+        }
+        .project-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+        .code-container {
+            background-color: #ffffff;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+            overflow-x: auto;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        pre {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            font-size: 14px;
+            margin: 0;
+            color: #24292e;
+        }
+        .comment { color: #6a737d; font-style: italic; }
+        .keyword { color: #d73a49; font-weight: bold; }
+        .function { color: #6f42c1; }
+        .string { color: #032f62; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Project 2: Scene Created with Turtle</h1>
+        <p><strong>Author:</strong> Elliott Hunt</p>
+    </header>
+
+    <main>
+        <section class="project-description">
+            <h3>Project Overview</h3>
+            <p>I made a house at night with stars and the moon in the sky and a tree next to the house using Python's built-in Turtle Graphics module.</p>
+        </section>
+
+        <h3>Output Preview</h3>
+        <div class="image-container">
+            <img src="project2.png" alt="Python Turtle Graphics House Scene" class="project-image">
+        </div>
+
+        <h3>Source Code</h3>
+        <div class="code-container">
+<pre>
+<span class="comment"># Loads the Turtle graphics module, which is a built-in library in Python</span>
+<span class="keyword">import</span> turtle
+<span class="keyword">import</span> math
+
+<span class="keyword">def</span> <span class="function">setup_turtle</span>():
+    <span class="string">"""Initialize turtle with standard settings"""</span>
+    t = turtle.Turtle()
+    t.speed(0) <span class="comment"># Fastest speed</span>
+    screen = turtle.Screen()
+    screen.title(<span class="string">"Turtle Graphics Assignment"</span>)
+    <span class="keyword">return</span> t, screen
+
+<span class="keyword">def</span> <span class="function">draw_rectangle</span>(t, width, height, fill_color=None):
+    <span class="string">"""Draw a rectangle with optional fill"""</span>
+    <span class="keyword">if</span> fill_color:
+        t.fillcolor(fill_color)
+        t.begin_fill()
+    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="function">range</span>(2):
+        t.forward(width)
+        t.right(90)
+        t.forward(height)
+        t.right(90)
+    <span class="keyword">if</span> fill_color:
+        t.end_fill()
+
+<span class="keyword">def</span> <span class="function">draw_square</span>(t, size, fill_color=None):
+    <span class="string">"""Draw a square with optional fill"""</span>
+    <span class="keyword">if</span> fill_color:
+        t.fillcolor(fill_color)
+        t.begin_fill()
+    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="function">range</span>(4):
+        t.forward(size)
+        t.right(90)
+    <span class="keyword">if</span> fill_color:
+        t.end_fill()
+
+<span class="keyword">def</span> <span class="function">draw_triangle</span>(t, size, fill_color=None):
+    <span class="string">"""Draw an equilateral triangle with optional fill"""</span>
+    <span class="keyword">if</span> fill_color:
+        t.fillcolor(fill_color)
+        t.begin_fill()
+    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="function">range</span>(3):
+        t.forward(size)
+        t.left(120)
+    <span class="keyword">if</span> fill_color:
+        t.end_fill()
+
+<span class="keyword">def</span> <span class="function">draw_circle</span>(t, radius, fill_color=None):
+    <span class="string">"""Draw a circle with optional fill"""</span>
+    <span class="keyword">if</span> fill_color:
+        t.fillcolor(fill_color)
+        t.begin_fill()
+    t.circle(radius)
+    <span class="keyword">if</span> fill_color:
+        t.end_fill()
+
+<span class="keyword">def</span> <span class="function">jump_to</span>(t, x, y):
+    <span class="string">"""Move turtle without drawing"""</span>
+    t.penup()
+    t.goto(x, y)
+    t.pendown()
+
+<span class="keyword">def</span> <span class="function">draw_scene</span>(t):
+    <span class="string">"""Draw a colorful scene with various shapes"""</span>
+    screen = t.getscreen()
+    screen.bgcolor(<span class="string">"midnightblue"</span>)
+    
+    <span class="comment"># Draw ground</span>
+    jump_to(t, -300, -25)
+    draw_rectangle(t, 600, 200, <span class="string">"darkgreen"</span>)
+    
+    <span class="comment"># Draw moon</span>
+    jump_to(t, 180, 200)
+    draw_circle(t, 40, <span class="string">"lightyellow"</span>)
+    
+    <span class="comment"># Draw house</span>
+    jump_to(t, -50, 50)
+    draw_rectangle(t, 100, 100, <span class="string">"red"</span>)
+    
+    <span class="comment"># Draw roof</span>
+    jump_to(t, -50, 50)
+    draw_triangle(t, 100, <span class="string">"black"</span>)
+    
+    <span class="comment"># Draw windows</span>
+    jump_to(t, 10, 37)
+    draw_square(t, 20, <span class="string">"yellow"</span>)
+    jump_to(t, -30, 37)
+    draw_square(t, 20, <span class="string">"yellow"</span>)
+    
+    <span class="comment"># Draw door</span>
+    jump_to(t, -10, 0)
+    draw_rectangle(t, 20, 50, <span class="string">"black"</span>)
+    
+    <span class="comment"># Draw stars</span>
+    jump_to(t, -241, 208); draw_circle(t, 5, <span class="string">"white"</span>)
+    jump_to(t, -103, 177); draw_circle(t, 5, <span class="string">"white"</span>)
+    jump_to(t, 3, 217); draw_circle(t, 5, <span class="string">"white"</span>)
+    
+    <span class="comment"># Draw tree trunk</span>
+    jump_to(t, 120, 0)
+    draw_rectangle(t, 20, 60, <span class="string">"brown"</span>)
+    
+    <span class="comment"># Draw tree foliage</span>
+    jump_to(t, 110, -40); draw_triangle(t, 40, <span class="string">"darkgreen"</span>)
+    jump_to(t, 110, -20); draw_triangle(t, 40, <span class="string">"darkgreen"</span>)
+    jump_to(t, 110, 0); draw_triangle(t, 40, <span class="string">"darkgreen"</span>)
+
+<span class="keyword">def</span> <span class="function">main</span>():
+    t, screen = setup_turtle()
+    draw_scene(t)
+    screen.mainloop()
+
+<span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:
+    main()
+</pre>
+        </div>
+    </main>
+
+    <footer style="margin-top: 30px; font-size: 12px; color: #666;">
+        <p><a href="index2.html">← Back to Portfolio</a></p>
+    </footer>
+
+</body>
+</html>
